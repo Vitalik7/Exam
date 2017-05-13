@@ -1,4 +1,7 @@
-var app = require('express')()
+var express = require('express');
+var app = express();
+var fs = require('fs')
+var path = require('path')
 var server = require('http').Server(app)
 var io = require('socket.io')(server)
 
@@ -10,6 +13,17 @@ app.get('/rooms', function(req, res) {
   })
   res.send(roomList)
 })
+
+var mediaPath = path.resolve(__dirname, 'media');
+
+app.use('/media', express.static(mediaPath));
+
+app.get('/files', function(req, res) {
+  var files = [];
+  fs.readdir(mediaPath, function(err, files) {
+    res.send(files);
+  });
+});
 
 var rooms = {}
 
